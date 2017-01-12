@@ -3,14 +3,13 @@ package saulmm.myapplication;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 @SuppressWarnings("unused")
-public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageView> {
+public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CardView> {
 
     private final static float MIN_AVATAR_PERCENTAGE_SIZE   = 0.3f;
     private final static int EXTRA_FINAL_AVATAR_PADDING     = 80;
@@ -64,12 +63,12 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageV
     }
 
     @Override
-    public boolean layoutDependsOn(CoordinatorLayout parent, CircleImageView child, View dependency) {
+    public boolean layoutDependsOn(CoordinatorLayout parent, CardView child, View dependency) {
         return dependency instanceof Toolbar;
     }
 
     @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, CircleImageView child, View dependency) {
+    public boolean onDependentViewChanged(CoordinatorLayout parent, CardView child, View dependency) {
         maybeInitProperties(child, dependency);
 
         final int maxScrollDistance = (int) (mStartToolbarPosition);
@@ -88,10 +87,12 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageV
 
             float heightToSubtract = ((mStartHeight - mCustomFinalHeight) * heightFactor);
 
+
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
             lp.width = (int) (mStartHeight - heightToSubtract);
             lp.height = (int) (mStartHeight - heightToSubtract);
             child.setLayoutParams(lp);
+            child.setRadius((lp.width/2) * (1/heightFactor));
         } else {
             float distanceYToSubtract = ((mStartYPosition - mFinalYPosition)
                     * (1f - expandedPercentageFactor)) + (mStartHeight/2);
@@ -103,11 +104,12 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageV
             lp.width = (int) (mStartHeight);
             lp.height = (int) (mStartHeight);
             child.setLayoutParams(lp);
+            child.setRadius(lp.width/2);
         }
         return true;
     }
 
-    private void maybeInitProperties(CircleImageView child, View dependency) {
+    private void maybeInitProperties(CardView child, View dependency) {
         if (mStartYPosition == 0)
             mStartYPosition = (int) (dependency.getY());
 
